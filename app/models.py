@@ -12,7 +12,7 @@ class User(db.Model):
     is_active_user = db.Column(db.Boolean, default=True) # for blacklisting
     
     # Relationships
-    staff_profile = db.relationship('StaffProfile', backref='user')
+    staff_profile = db.relationship('StaffProfile', backref='user', uselist=False)
     bookings = db.relationship('Booking', backref='user', lazy=True)
     assigned_treks = db.relationship('Trek', backref='assigned_staff', lazy=True) # If user is a staff
 
