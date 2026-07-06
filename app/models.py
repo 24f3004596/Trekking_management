@@ -1,12 +1,8 @@
-from app.extensions import db, login_manager
-from flask_login import UserMixin
+from app.extensions import db
 from datetime import datetime
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
-class User(db.Model, UserMixin):
+class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
@@ -16,13 +12,12 @@ class User(db.Model, UserMixin):
     is_active_user = db.Column(db.Boolean, default=True) # for blacklisting
     
     # Relationships
-    staff_profile = db.relationship('StaffProfile', backref='user', uselist=False, cascade="all, delete-orphan")
+    staff_profile = db.relationship('StaffProfile', backref='user')
     bookings = db.relationship('Booking', backref='user', lazy=True)
     assigned_treks = db.relationship('Trek', backref='assigned_staff', lazy=True) # If user is a staff
 
-    def __repr__(self):
-        return f"<User {self.username} - {self.role}>"
 
+    
 class StaffProfile(db.Model):
     __tablename__ = 'staff_profiles'
     id = db.Column(db.Integer, primary_key=True)
@@ -30,8 +25,7 @@ class StaffProfile(db.Model):
     contact_details = db.Column(db.String(100), nullable=True)
     status = db.Column(db.String(20), default='Pending') # 'Pending', 'Approved'
 
-    def __repr__(self):
-        return f"<StaffProfile {self.user.username} - {self.status}>"
+
 
 class Trek(db.Model):
     __tablename__ = 'treks'
@@ -52,8 +46,7 @@ class Trek(db.Model):
     # Relationships
     bookings = db.relationship('Booking', backref='trek', lazy=True)
 
-    def __repr__(self):
-        return f"<Trek {self.name} - {self.status}>"
+
 
 class Booking(db.Model):
     __tablename__ = 'bookings'
@@ -63,5 +56,4 @@ class Booking(db.Model):
     booking_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(20), default='Booked') # 'Booked', 'Cancelled', 'Completed'
 
-    def __repr__(self):
-        return f"<Booking User:{self.user_id} Trek:{self.trek_id} Status:{self.status}>"
+
