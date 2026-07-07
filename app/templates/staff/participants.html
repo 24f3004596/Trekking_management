@@ -1,0 +1,83 @@
+{% extends "staff/staff_base.html" %}
+
+{% block content %}
+<div style="margin-bottom:12px;">
+    <a href="{{ url_for('staff.trek_detail', trek_id=trek.id) }}" class="btn btn-secondary">← Back to Trek</a>
+    <a href="{{ url_for('staff.dashboard') }}" class="btn btn-secondary" style="margin-left:6px;">Dashboard</a>
+</div>
+
+<h1>Participants — {{ trek.name }}</h1>
+<p style="color:#555; font-size:13px; margin-bottom:16px;">
+    Location: <strong>{{ trek.location }}</strong> &nbsp;|&nbsp;
+    Dates: <strong>{{ trek.start_date.strftime('%d %b %Y') }} → {{ trek.end_date.strftime('%d %b %Y') }}</strong> &nbsp;|&nbsp;
+    Status:
+    {% if trek.status == 'Open' %}
+        <span class="badge badge-green">Open</span>
+    {% elif trek.status == 'Closed' %}
+        <span class="badge badge-red">Closed</span>
+    {% elif trek.status == 'Completed' %}
+        <span class="badge badge-blue">Completed</span>
+    {% elif trek.status in ['Started', 'Ongoing'] %}
+        <span class="badge badge-yellow">{{ trek.status }}</span>
+    {% else %}
+        <span class="badge badge-grey">{{ trek.status }}</span>
+    {% endif %}
+</p>
+
+<!-- Stats row -->
+<div class="card-row" style="margin-bottom:16px;">
+    <div class="card">
+        <div class="number">{{ bookings|length }}</div>
+        <div class="label">Total Bookings</div>
+    </div>
+    <div class="card">
+        <div class="number">{{ bookings|selectattr('status', 'eq', 'Booked')|list|length }}</div>
+        <div class="label">Active (Booked)</div>
+    </div>
+    <div class="card">
+        <div class="number">{{ bookings|selectattr('status', 'eq', 'Cancelled')|list|length }}</div>
+        <div class="label">Cancelled</div>
+    </div>
+    <div class="card">
+        <div class="number">{{ trek.available_slots }}</div>
+        <div class="label">Slots Remaining</div>
+    </div>
+</div>
+
+{% if bookings %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Trekker Name</th>
+            <th>Email</th>
+            <th>Booking Date</th>
+            <th>Booking Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ b.user.username }}</td>
+            <td>{{ b.user.email }}</td>
+            <td>{{ b.booking_date.strftime('%d %b %Y, %I:%M %p') }}</td>
+            <td>
+                {% if b.status == 'Booked' %}
+                    <span class="badge badge-green">Booked</span>
+                {% elif b.status == 'Cancelled' %}
+                    <span class="badge badge-red">Cancelled</span>
+                {% elif b.status == 'Completed' %}
+                    <span class="badge badge-blue">Completed</span>
+                {% else %}
+                    <span class="badge badge-grey">{{ b.status }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <div class="flash info">No participants have registered for this trek yet.</div>
+{% endif %}
+{% endblock %}

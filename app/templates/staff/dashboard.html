@@ -1,15 +1,55 @@
-{% extends "base.html" %}
+{% extends "staff/staff_base.html" %}
 
 {% block content %}
-<div class="row mt-4">
-    <div class="col-md-12">
-        <h2 class="text-primary fw-bold">Trek Staff Dashboard</h2>
-        <p class="text-muted">Welcome back! Here are the treks assigned to you by the Admin.</p>
-        <hr>
-        
-        <div class="alert alert-info shadow-sm border-0">
-            <strong>No Treks Assigned Yet.</strong> When the Admin assigns a trek to you, it will appear here.
-        </div>
+<h1>Staff Dashboard</h1>
+<p style="color:#555; margin-bottom:16px;">Welcome, <strong>{{ staff_user.username }}</strong>! Here are your assigned treks.</p>
+
+<!-- Summary cards -->
+<div class="card-row">
+    <div class="card">
+        <div class="number">{{ trek_data|length }}</div>
+        <div class="label">Assigned Treks</div>
+    </div>
+    <div class="card">
+        <div class="number">{{ trek_data|sum(attribute='trekker_count') }}</div>
+        <div class="label">Total Registered Trekkers</div>
     </div>
 </div>
+
+{% if trek_data %}
+    {% for item in trek_data %}
+    {% set t = item.trek %}
+    <div class="trek-card">
+        <h3>{{ t.name }}</h3>
+        <div class="meta">
+            <span>{{ t.location }}</span>
+            <span>{{ t.difficulty }}</span>
+            <span>{{ t.start_date.strftime('%d %b %Y') }} → {{ t.end_date.strftime('%d %b %Y') }}</span>
+            <span>{{ t.duration_days }} day(s)</span>
+        </div>
+        <div style="margin-bottom:8px; font-size:13px;">
+            <strong>Slots Available:</strong> {{ t.available_slots }} &nbsp;|&nbsp;
+            <strong>Registered Trekkers:</strong> {{ item.trekker_count }} &nbsp;|&nbsp;
+            <strong>Status:</strong>
+            {% if t.status == 'Open' %}
+                <span class="badge badge-green">Open</span>
+            {% elif t.status == 'Closed' %}
+                <span class="badge badge-red">Closed</span>
+            {% elif t.status == 'Completed' %}
+                <span class="badge badge-blue">Completed</span>
+            {% elif t.status == 'Started' %}
+                <span class="badge badge-yellow">Started</span>
+            {% elif t.status == 'Ongoing' %}
+                <span class="badge badge-yellow">Ongoing</span>
+            {% else %}
+                <span class="badge badge-grey">{{ t.status }}</span>
+            {% endif %}
+        </div>
+        <a href="{{ url_for('staff.trek_detail', trek_id=t.id) }}" class="btn btn-primary">Manage Trek</a>
+        <a href="{{ url_for('staff.participants', trek_id=t.id) }}" class="btn btn-secondary" style="margin-left:6px;">View Participants</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="flash info">No treks assigned to you yet. Please wait for the Admin to assign a trek.</div>
+{% endif %}
 {% endblock %}
