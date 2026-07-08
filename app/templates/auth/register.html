@@ -17,18 +17,18 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-muted">Password</label>
-                        <input type="password" name="password" class="form-control" required placeholder="••••••••">
+                        <input type="password" name="password" class="form-control" required placeholder="Enter password">
                     </div>
                     <div class="mb-3">
                         <label class="form-label text-muted">I am registering as a:</label>
-                        <select name="role" id="role-select" class="form-select" onchange="toggleStaffFields()">
+                        <select name="role" class="form-select">
                             <option value="Trekker">User (Trekker)</option>
                             <option value="Staff">Trek Staff</option>
                         </select>
                     </div>
                     
-                    <div class="mb-4 d-none" id="staff-fields">
-                        <label class="form-label text-muted">Contact Details (Staff Only)</label>
+                    <div class="mb-4">
+                        <label class="form-label text-muted">Contact Details (Staff Only — leave blank if Trekker)</label>
                         <input type="text" name="contact_details" class="form-control" placeholder="Phone number or address">
                         <small class="text-danger mt-1">Note: Staff accounts require Admin approval before you can log in.</small>
                     </div>
@@ -42,16 +42,4 @@
         </div>
     </div>
 </div>
-
-<script>
-    function toggleStaffFields() {
-        const role = document.getElementById('role-select').value;
-        const staffFields = document.getElementById('staff-fields');
-        if (role === 'Staff') {
-            staffFields.classList.remove('d-none');
-        } else {
-            staffFields.classList.add('d-none');
-        }
-    }
-</script>
 {% endblock %}

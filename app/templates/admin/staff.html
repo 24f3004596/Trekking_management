@@ -4,7 +4,7 @@
 <h1>Trek Staff</h1>
 
 <form class="search-form" method="GET" action="{{ url_for('admin.staff') }}">
-    <input type="text" name="search" placeholder="Search name or email..." value="{{ search }}">
+    <input type="text" name="search" placeholder="Search by name, email or ID..." value="{{ search }}">
     <button class="btn btn-primary" type="submit">Search</button>
     {% if search %}
         <a class="btn btn-secondary" href="{{ url_for('admin.staff') }}">Clear</a>
@@ -56,8 +56,7 @@
 
                 {% if member.is_active_user %}
                     <form class="inline-form" method="POST"
-                          action="{{ url_for('admin.blacklist_staff', user_id=member.id) }}"
-                          onsubmit="return confirm('Blacklist {{ member.username }}?');">
+                          action="{{ url_for('admin.blacklist_staff', user_id=member.id) }}">
                         <button class="btn btn-danger" type="submit">Blacklist</button>
                     </form>
                 {% else %}
@@ -66,6 +65,11 @@
                         <button class="btn btn-warning" type="submit">Activate</button>
                     </form>
                 {% endif %}
+
+                <form class="inline-form" method="POST"
+                      action="{{ url_for('admin.delete_staff', user_id=member.id) }}">
+                    <button class="btn btn-secondary" type="submit">Delete</button>
+                </form>
             </td>
         </tr>
         {% endfor %}

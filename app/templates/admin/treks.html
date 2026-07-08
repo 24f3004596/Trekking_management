@@ -4,7 +4,7 @@
 <h1>Treks</h1>
 
 <form class="search-form" method="GET" action="{{ url_for('admin.treks') }}">
-    <input type="text" name="search" placeholder="Search name or location..." value="{{ search }}">
+    <input type="text" name="search" placeholder="Search by name, location or ID..." value="{{ search }}">
     <button class="btn btn-primary" type="submit">Search</button>
     {% if search %}
         <a class="btn btn-secondary" href="{{ url_for('admin.treks') }}">Clear</a>
@@ -52,13 +52,18 @@
                 {% endif %}
             </td>
             <td>
-                <a class="btn btn-primary" href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}">Edit</a>
-                <a class="btn btn-warning" href="{{ url_for('admin.assign_staff', trek_id=trek.id) }}">Assign</a>
-                <form class="inline-form" method="POST"
-                      action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}"
-                      onsubmit="return confirm('Delete this trek?');">
-                    <button class="btn btn-danger" type="submit">Delete</button>
-                </form>
+                <div style="display:flex; gap:4px; flex-wrap:nowrap; align-items:center;">
+                    <a class="btn btn-primary" href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}">Edit</a>
+                    <a class="btn btn-warning" href="{{ url_for('admin.assign_staff', trek_id=trek.id) }}">Assign</a>
+                    {% if trek.status == 'Pending' %}
+                    <form method="POST" action="{{ url_for('admin.approve_trek', trek_id=trek.id) }}">
+                        <button class="btn btn-success" type="submit">Approve</button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}">
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </div>
             </td>
         </tr>
         {% endfor %}

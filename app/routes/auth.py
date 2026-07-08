@@ -51,6 +51,11 @@ def register():
         password = request.form.get('password')
         role = request.form.get('role') # 'Trekker' or 'Staff'
         
+        # Prevent Admin registration — admin is pre-created only
+        if role not in ['Trekker', 'Staff']:
+            flash('Invalid role selected. Only Trekker or Staff registration is allowed.', 'danger')
+            return redirect(url_for('auth.register'))
+        
         # Simple validation
         if User.query.filter_by(email=email).first():
             flash('Email address already exists.', 'danger')

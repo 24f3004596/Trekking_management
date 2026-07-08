@@ -151,6 +151,9 @@ def update_phase(trek_id):
     allowed = ['Started', 'Ongoing', 'Completed']
     if new_phase in allowed:
         trek.status = new_phase
+        # When trek is completed, mark all active bookings as Completed
+        if new_phase == 'Completed':
+            Booking.query.filter_by(trek_id=trek.id, status='Booked').update({'status': 'Completed'})
         db.session.commit()
         flash(f'Trek marked as {new_phase}.', 'success')
     else:

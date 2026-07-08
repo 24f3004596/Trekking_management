@@ -1,0 +1,65 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<h1>Trekking History</h1>
+<p style="color:#555; font-size:13px; margin-bottom:14px;">All booking records across all users and treks.</p>
+
+{% if bookings %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>User</th>
+            <th>Trek</th>
+            <th>Location</th>
+            <th>Trek Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Booked On</th>
+            <th>Booking Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ b.user.username }}</td>
+            <td>{{ b.trek.name }}</td>
+            <td>{{ b.trek.location }}</td>
+            <td>
+                {% if b.trek.status == 'Open' %}
+                    <span class="badge badge-green">Open</span>
+                {% elif b.trek.status == 'Completed' %}
+                    <span class="badge badge-blue">Completed</span>
+                {% elif b.trek.status == 'Closed' %}
+                    <span class="badge badge-red">Closed</span>
+                {% elif b.trek.status == 'Approved' %}
+                    <span class="badge badge-blue">Approved</span>
+                {% elif b.trek.status in ['Started', 'Ongoing'] %}
+                    <span class="badge badge-yellow">{{ b.trek.status }}</span>
+                {% else %}
+                    <span class="badge badge-grey">{{ b.trek.status }}</span>
+                {% endif %}
+            </td>
+            <td>{{ b.trek.start_date.strftime('%d %b %Y') }}</td>
+            <td>{{ b.trek.end_date.strftime('%d %b %Y') }}</td>
+            <td>{{ b.booking_date.strftime('%d %b %Y') }}</td>
+            <td>
+                {% if b.status == 'Booked' %}
+                    <span class="badge badge-green">Booked</span>
+                {% elif b.status == 'Cancelled' %}
+                    <span class="badge badge-red">Cancelled</span>
+                {% elif b.status == 'Completed' %}
+                    <span class="badge badge-blue">Completed</span>
+                {% else %}
+                    <span class="badge badge-grey">{{ b.status }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p style="color:#888;">No booking records found.</p>
+{% endif %}
+{% endblock %}

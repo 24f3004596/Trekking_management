@@ -4,7 +4,7 @@
 <h1>Users (Trekkers)</h1>
 
 <form class="search-form" method="GET" action="{{ url_for('admin.users') }}">
-    <input type="text" name="search" placeholder="Search name or email..." value="{{ search }}">
+    <input type="text" name="search" placeholder="Search by name, email or ID..." value="{{ search }}">
     <button class="btn btn-primary" type="submit">Search</button>
     {% if search %}
         <a class="btn btn-secondary" href="{{ url_for('admin.users') }}">Clear</a>
@@ -34,8 +34,7 @@
             <td>
                 {% if u.is_active_user %}
                     <form class="inline-form" method="POST"
-                          action="{{ url_for('admin.blacklist_user', user_id=u.id) }}"
-                          onsubmit="return confirm('Blacklist {{ u.username }}?');">
+                          action="{{ url_for('admin.blacklist_user', user_id=u.id) }}">
                         <button class="btn btn-danger" type="submit">Blacklist</button>
                     </form>
                 {% else %}

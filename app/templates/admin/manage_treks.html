@@ -1,0 +1,77 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<h1>Manage Treks</h1>
+
+<p style="margin-bottom:14px;">
+    <a class="btn btn-success" href="{{ url_for('admin.add_trek') }}">+ Add New Trek</a>
+</p>
+
+<form class="search-form" method="GET" action="{{ url_for('admin.treks') }}">
+    <input type="text" name="search" placeholder="Search by name, location or ID..." value="{{ search }}">
+    <button class="btn btn-primary" type="submit">Search</button>
+    {% if search %}
+        <a class="btn btn-secondary" href="{{ url_for('admin.treks') }}">Clear</a>
+    {% endif %}
+</form>
+
+{% if treks %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th><th>Name</th><th>Location</th><th>Difficulty</th>
+            <th>Duration</th><th>Slots</th><th>Status</th>
+            <th>Start</th><th>End</th><th>Staff</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trek in treks %}
+        <tr>
+            <td>{{ trek.id }}</td>
+            <td>{{ trek.name }}</td>
+            <td>{{ trek.location }}</td>
+            <td>{{ trek.difficulty }}</td>
+            <td>{{ trek.duration_days }} day(s)</td>
+            <td>{{ trek.available_slots }}</td>
+            <td>
+                {% if trek.status == 'Open' %}
+                    <span class="badge badge-green">{{ trek.status }}</span>
+                {% elif trek.status == 'Closed' or trek.status == 'Completed' %}
+                    <span class="badge badge-grey">{{ trek.status }}</span>
+                {% elif trek.status == 'Approved' %}
+                    <span class="badge badge-blue">{{ trek.status }}</span>
+                {% else %}
+                    <span class="badge badge-yellow">{{ trek.status }}</span>
+                {% endif %}
+            </td>
+            <td>{{ trek.start_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ trek.end_date.strftime('%Y-%m-%d') }}</td>
+            <td>
+                {% if trek.assigned_staff %}
+                    {{ trek.assigned_staff.username }}
+                {% else %}
+                    <em style="color:#999">Unassigned</em>
+                {% endif %}
+            </td>
+            <td>
+                <div style="display:flex; gap:4px; flex-wrap:nowrap; align-items:center;">
+                    <a class="btn btn-primary" href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}">Edit</a>
+                    <a class="btn btn-warning" href="{{ url_for('admin.assign_staff', trek_id=trek.id) }}">Assign</a>
+                    {% if trek.status == 'Pending' %}
+                    <form method="POST" action="{{ url_for('admin.approve_trek', trek_id=trek.id) }}">
+                        <button class="btn btn-success" type="submit">Approve</button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}">
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p style="color:#888">No treks found.</p>
+{% endif %}
+{% endblock %}

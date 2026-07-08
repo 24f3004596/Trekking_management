@@ -41,10 +41,17 @@ def treks():
     search = request.args.get('search', '').strip()
     query = Trek.query
     if search:
-        query = query.filter(
-            Trek.name.ilike(f'%{search}%') |
-            Trek.location.ilike(f'%{search}%')
-        )
+        if search.isdigit():
+            query = query.filter(
+                (Trek.id == int(search)) |
+                Trek.name.ilike(f'%{search}%') |
+                Trek.location.ilike(f'%{search}%')
+            )
+        else:
+            query = query.filter(
+                Trek.name.ilike(f'%{search}%') |
+                Trek.location.ilike(f'%{search}%')
+            )
     all_treks = query.all()
     return render_template('admin/treks.html', treks=all_treks, search=search)
 
@@ -153,10 +160,17 @@ def staff():
     search = request.args.get('search', '').strip()
     query = User.query.filter_by(role='Staff')
     if search:
-        query = query.filter(
-            User.username.ilike(f'%{search}%') |
-            User.email.ilike(f'%{search}%')
-        )
+        if search.isdigit():
+            query = query.filter(
+                (User.id == int(search)) |
+                User.username.ilike(f'%{search}%') |
+                User.email.ilike(f'%{search}%')
+            )
+        else:
+            query = query.filter(
+                User.username.ilike(f'%{search}%') |
+                User.email.ilike(f'%{search}%')
+            )
     all_staff = query.all()
     return render_template('admin/staff.html', staff_list=all_staff, search=search)
 
@@ -197,6 +211,27 @@ def activate_staff(user_id):
     return redirect(url_for('admin.staff'))
 
 
+@admin_bp.route('/staff/<int:user_id>/delete', methods=['POST'])
+def delete_staff(user_id):
+    if not admin_required():
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get_or_404(user_id)
+    if user.role != 'Staff':
+        flash('Invalid operation.', 'danger')
+        return redirect(url_for('admin.staff'))
+
+    # Remove assigned treks
+    Trek.query.filter_by(assigned_staff_id=user_id).update({'assigned_staff_id': None})
+    # Remove staff profile
+    StaffProfile.query.filter_by(user_id=user_id).delete()
+    # Remove the user
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'Staff {user.username} has been removed.', 'success')
+    return redirect(url_for('admin.staff'))
+
+
 # ─── User Management ─────────────────────────────────────────────────────────
 
 @admin_bp.route('/users')
@@ -207,10 +242,17 @@ def users():
     search = request.args.get('search', '').strip()
     query = User.query.filter_by(role='Trekker')
     if search:
-        query = query.filter(
-            User.username.ilike(f'%{search}%') |
-            User.email.ilike(f'%{search}%')
-        )
+        if search.isdigit():
+            query = query.filter(
+                (User.id == int(search)) |
+                User.username.ilike(f'%{search}%') |
+                User.email.ilike(f'%{search}%')
+            )
+        else:
+            query = query.filter(
+                User.username.ilike(f'%{search}%') |
+                User.email.ilike(f'%{search}%')
+            )
     all_users = query.all()
     return render_template('admin/users.html', users=all_users, search=search)
 
@@ -248,3 +290,41 @@ def bookings():
 
     all_bookings = Booking.query.order_by(Booking.booking_date.desc()).all()
     return render_template('admin/bookings.html', bookings=all_bookings)
+
+
+# ─── Approve Trek ──────────────────────────────────────────────────────────────
+
+@admin_bp.route('/treks/<int:trek_id>/approve', methods=['POST'])
+def approve_trek(trek_id):
+    if not admin_required():
+        return redirect(url_for('auth.login'))
+
+    trek = Trek.query.get_or_404(trek_id)
+    if trek.status == 'Pending':
+        trek.status = 'Open'
+        db.session.commit()
+        flash(f'Trek "{trek.name}" is now open for booking.', 'success')
+    else:
+        flash('Only Pending treks can be approved.', 'warning')
+    return redirect(url_for('admin.treks'))
+
+
+# ─── Trekking History ─────────────────────────────────────────────────────────
+
+@admin_bp.route('/history')
+def history():
+    if not admin_required():
+        return redirect(url_for('auth.login'))
+
+    all_bookings = Booking.query.order_by(Booking.booking_date.desc()).all()
+
+    # Deduplicate — keep only the most recent booking per user+trek pair
+    seen = set()
+    unique_bookings = []
+    for b in all_bookings:
+        key = (b.user_id, b.trek_id)
+        if key not in seen:
+            seen.add(key)
+            unique_bookings.append(b)
+
+    return render_template('admin/history.html', bookings=unique_bookings)
