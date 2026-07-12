@@ -279,3 +279,61 @@ textarea {
     color: #666;
     margin-bottom: 8px;
 }
+
+/* ============================================
+   Staff Theme — blue accent (#1a5276)
+   Applied when <body class="staff-theme">
+   ============================================ */
+.staff-theme .topbar       { background: #1a5276; }
+.staff-theme .topbar a     { color: #aed6f1; }
+.staff-theme .topbar .nav-right span { color: #aed6f1; }
+.staff-theme .sidebar      { background: #1f618d; }
+.staff-theme .sidebar a    { color: #aed6f1; }
+.staff-theme .sidebar a:hover,
+.staff-theme .sidebar a.active { background: #154360; color: #fff; }
+.staff-theme .sidebar .section-title { color: #7fb3d3; }
+.staff-theme h1 { color: #1a5276; }
+.staff-theme h2 { color: #1a5276; }
+.staff-theme th { background: #1a5276; }
+.staff-theme .card { border-top-color: #1a5276; }
+.staff-theme .card .number { color: #1a5276; }
+.staff-theme .btn-primary  { background: #1a5276; }
+.staff-theme .trek-card    { border-left-color: #1a5276; }
+.staff-theme .trek-card h3 { color: #1a5276; }
+
+/* ============================================
+   Auth Pages (login / register)
+   ============================================ */
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 60px;
+    min-height: 100vh;
+    background: #f4f4f4;
+}
+.auth-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 28px 32px;
+    width: 100%;
+    max-width: 420px;
+}
+.auth-box h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+.auth-nav {
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.auth-nav strong { font-size: 15px; }
+.auth-nav a { color: #bdc3c7; text-decoration: none; font-size: 13px; margin-left: 14px; }
+.auth-nav a:hover { color: #fff; }
+.auth-main { padding: 30px 20px; }
+

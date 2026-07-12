@@ -1,27 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <h3 class="text-center mb-4">Welcome Back!</h3>
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    <div class="mb-3">
-                        <label class="form-label text-muted">Email address</label>
-                        <input type="email" name="email" class="form-control" required placeholder="name@example.com">
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Password</label>
-                        <input type="password" name="password" class="form-control" required placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Login</button>
-                </form>
-                <div class="text-center mt-3">
-                    <small class="text-muted">Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>.</small>
-                </div>
-            </div>
-        </div>
+<div class="auth-page">
+    <div class="auth-box">
+        <h1>Welcome Back</h1>
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            <label>Email address</label>
+            <input type="email" name="email" required placeholder="name@example.com">
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="••••••••">
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:12px;">Login</button>
+        </form>
+        <p style="font-size:13px; color:#666; text-align:center;">
+            Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>.
+        </p>
     </div>
 </div>
 {% endblock %}

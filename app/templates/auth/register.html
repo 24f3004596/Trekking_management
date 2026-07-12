@@ -1,45 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-                <h3 class="text-center mb-4">Create an Account</h3>
-                <form method="POST" action="{{ url_for('auth.register') }}">
-                    <div class="mb-3">
-                        <label class="form-label text-muted">Username</label>
-                        <input type="text" name="username" class="form-control" required placeholder="Choose a username">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted">Email address</label>
-                        <input type="email" name="email" class="form-control" required placeholder="name@example.com">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted">Password</label>
-                        <input type="password" name="password" class="form-control" required placeholder="Enter password">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label text-muted">I am registering as a:</label>
-                        <select name="role" class="form-select">
-                            <option value="Trekker">User (Trekker)</option>
-                            <option value="Staff">Trek Staff</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label text-muted">Contact Details (Staff Only — leave blank if Trekker)</label>
-                        <input type="text" name="contact_details" class="form-control" placeholder="Phone number or address">
-                        <small class="text-danger mt-1">Note: Staff accounts require Admin approval before you can log in.</small>
-                    </div>
+<div class="auth-page">
+    <div class="auth-box">
+        <h1>Create an Account</h1>
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <label>Username</label>
+            <input type="text" name="username" required placeholder="Choose a username">
 
-                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2">Register</button>
-                </form>
-                <div class="text-center mt-3">
-                    <small class="text-muted">Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>.</small>
-                </div>
-            </div>
-        </div>
+            <label>Email address</label>
+            <input type="email" name="email" required placeholder="name@example.com">
+
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="Enter password">
+
+            <label>I am registering as a:</label>
+            <select name="role">
+                <option value="Trekker">User (Trekker)</option>
+                <option value="Staff">Trek Staff</option>
+            </select>
+
+            <label>Contact Details <span style="color:#888;">(Staff only — leave blank if Trekker)</span></label>
+            <input type="text" name="contact_details" placeholder="Phone number or address">
+            <p style="font-size:12px; color:#c0392b; margin-top:-8px; margin-bottom:12px;">
+                Note: Staff accounts require Admin approval before you can log in.
+            </p>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:12px;">Register</button>
+        </form>
+        <p style="font-size:13px; color:#666; text-align:center;">
+            Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>.
+        </p>
     </div>
 </div>
 {% endblock %}

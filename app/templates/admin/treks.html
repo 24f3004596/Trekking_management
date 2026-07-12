@@ -59,6 +59,10 @@
                     <form method="POST" action="{{ url_for('admin.approve_trek', trek_id=trek.id) }}">
                         <button class="btn btn-success" type="submit">Approve</button>
                     </form>
+                    {% elif trek.status == 'Approved' %}
+                    <form method="POST" action="{{ url_for('admin.open_trek', trek_id=trek.id) }}">
+                        <button class="btn btn-primary" type="submit">Open</button>
+                    </form>
                     {% endif %}
                     <form method="POST" action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}">
                         <button class="btn btn-danger" type="submit">Delete</button>

@@ -292,7 +292,7 @@ def bookings():
     return render_template('admin/bookings.html', bookings=all_bookings)
 
 
-# ─── Approve Trek ──────────────────────────────────────────────────────────────
+# ─── Approve Trek (Pending → Approved) ────────────────────────────────────────
 
 @admin_bp.route('/treks/<int:trek_id>/approve', methods=['POST'])
 def approve_trek(trek_id):
@@ -301,11 +301,28 @@ def approve_trek(trek_id):
 
     trek = Trek.query.get_or_404(trek_id)
     if trek.status == 'Pending':
+        trek.status = 'Approved'
+        db.session.commit()
+        flash(f'Trek "{trek.name}" has been approved. Open it when ready.', 'success')
+    else:
+        flash('Only Pending treks can be approved.', 'warning')
+    return redirect(url_for('admin.treks'))
+
+
+# ─── Open Trek (Approved → Open) ──────────────────────────────────────────────
+
+@admin_bp.route('/treks/<int:trek_id>/open', methods=['POST'])
+def open_trek(trek_id):
+    if not admin_required():
+        return redirect(url_for('auth.login'))
+
+    trek = Trek.query.get_or_404(trek_id)
+    if trek.status == 'Approved':
         trek.status = 'Open'
         db.session.commit()
         flash(f'Trek "{trek.name}" is now open for booking.', 'success')
     else:
-        flash('Only Pending treks can be approved.', 'warning')
+        flash('Only Approved treks can be opened for booking.', 'warning')
     return redirect(url_for('admin.treks'))
 
 
@@ -328,3 +345,56 @@ def history():
             unique_bookings.append(b)
 
     return render_template('admin/history.html', bookings=unique_bookings)
+
+
+# ─── Create Staff ─────────────────────────────────────────────────────────────
+
+@admin_bp.route('/staff/create', methods=['GET', 'POST'])
+def create_staff():
+    if not admin_required():
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+        contact = request.form.get('contact_details', '').strip()
+
+        if not username or not email or not password:
+            flash('Username, email, and password are required.', 'danger')
+            return redirect(url_for('admin.create_staff'))
+
+        if User.query.filter_by(email=email).first():
+            flash('Email address already exists.', 'danger')
+            return redirect(url_for('admin.create_staff'))
+
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists.', 'danger')
+            return redirect(url_for('admin.create_staff'))
+
+        from app.extensions import bcrypt
+        hashed_pw = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        new_user = User(
+            username=username,
+            email=email,
+            password_hash=hashed_pw,
+            role='Staff',
+            is_active_user=True,
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        profile = StaffProfile(
+            user_id=new_user.id,
+            contact_details=contact,
+            status='Approved',        # pre-approved — can log in immediately
+        )
+        db.session.add(profile)
+        db.session.commit()
+
+        flash(f'Staff account "{username}" created and pre-approved.', 'success')
+        return redirect(url_for('admin.staff'))
+
+    return render_template('admin/create_staff.html')
+

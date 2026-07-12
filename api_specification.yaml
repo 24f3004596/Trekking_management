@@ -1,0 +1,276 @@
+
+info:
+  title: Trekking Management Application API
+  description: >
+    Web application routes for the Trekking management system. 
+    Note that this is a full-stack Flask application. The endpoints listed handle HTTP requests, 
+    serve HTML pages (Jinja2 templates), and process form submissions (application/x-www-form-urlencoded).
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:5000
+    description: Local development server
+
+paths:
+  # General & Authentication
+  /:
+    get:
+      tags:
+        - General
+      summary: Root endpoint
+      description: Redirects to login page or appropriate dashboard based on user role.
+      responses:
+        '302':
+          description: Redirection
+  /login:
+    get:
+      tags:
+        - Authentication
+      summary: Show login form
+      responses:
+        '200':
+          description: HTML login page
+    post:
+      tags:
+        - Authentication
+      summary: Process login request
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '302':
+          description: Redirects to dashboard on success, or back to login on failure.
+  /register:
+    get:
+      tags:
+        - Authentication
+      summary: Show registration form
+      responses:
+        '200':
+          description: HTML registration page
+    post:
+      tags:
+        - Authentication
+      summary: Process registration request
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: [trekker, staff]
+              required:
+                - username
+                - email
+                - password
+                - role
+      responses:
+        '302':
+          description: Redirects to login/dashboard
+  /logout:
+    get:
+      tags:
+        - Authentication
+      summary: Logout current user
+      responses:
+        '302':
+          description: Redirects to home/login
+          
+  # Admin Routes
+  /admin/dashboard:
+    get:
+      tags:
+        - Admin
+      summary: Admin dashboard
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: HTML page
+  /admin/treks:
+    get:
+      tags:
+        - Admin - Treks
+      summary: List all treks
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: HTML list of treks
+  /admin/treks/add:
+    get:
+      tags:
+        - Admin - Treks
+      summary: Show add trek form
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: HTML form
+    post:
+      tags:
+        - Admin - Treks
+      summary: Process new trek creation
+      security:
+        - sessionCookie: []
+      responses:
+        '302':
+          description: Redirects to treks list
+  /admin/treks/{trek_id}/edit:
+    get:
+      tags:
+        - Admin - Treks
+      summary: Show edit trek form
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: trek_id
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: HTML form
+    post:
+      tags:
+        - Admin - Treks
+      summary: Process trek update
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: trek_id
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        '302':
+          description: Redirect
+  /admin/treks/{trek_id}/delete:
+    post:
+      tags:
+        - Admin - Treks
+      summary: Delete a trek
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: trek_id
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        '302':
+          description: Redirect
+  /admin/staff/create:
+    get:
+      tags:
+        - Admin - Staff
+      summary: Show manual staff creation form
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: HTML form
+    post:
+      tags:
+        - Admin - Staff
+      summary: Process manual staff creation
+      security:
+        - sessionCookie: []
+      responses:
+        '302':
+          description: Redirect
+          
+  # Staff Routes
+  /staff/dashboard:
+    get:
+      tags:
+        - Staff
+      summary: Staff home dashboard
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: HTML dashboard
+  /staff/treks/{trek_id}:
+    get:
+      tags:
+        - Staff
+      summary: View assigned trek details
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: trek_id
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: HTML page
+          
+  # User Routes
+  /user/dashboard:
+    get:
+      tags:
+        - User
+      summary: Trekker dashboard
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: HTML dashboard
+  /user/treks:
+    get:
+      tags:
+        - User
+      summary: Browse open treks
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: HTML page
+  /user/treks/{trek_id}/book:
+    post:
+      tags:
+        - User
+      summary: Book a trek slot
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: trek_id
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        '302':
+          description: Redirect to bookings
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: Flask session cookie used for authenticating users.
