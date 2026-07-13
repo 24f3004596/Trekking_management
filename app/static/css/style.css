@@ -1,8 +1,4 @@
-/* ============================================
-   TrekManage — Global Stylesheet
-   ============================================ */
 
-/* -- Base Reset and Typography -- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -52,7 +48,7 @@ a:hover {
     align-items: center;
 }
 
-/* -- Sidebar + Main Layout -- */
+/*Sidebar + Main Layout */
 .layout {
     display: flex;
     min-height: calc(100vh - 42px);
@@ -280,10 +276,6 @@ textarea {
     margin-bottom: 8px;
 }
 
-/* ============================================
-   Staff Theme — blue accent (#1a5276)
-   Applied when <body class="staff-theme">
-   ============================================ */
 .staff-theme .topbar       { background: #1a5276; }
 .staff-theme .topbar a     { color: #aed6f1; }
 .staff-theme .topbar .nav-right span { color: #aed6f1; }
@@ -301,9 +293,7 @@ textarea {
 .staff-theme .trek-card    { border-left-color: #1a5276; }
 .staff-theme .trek-card h3 { color: #1a5276; }
 
-/* ============================================
-   Auth Pages (login / register)
-   ============================================ */
+/* Auth Pages (login / register) */
 .auth-page {
     display: flex;
     justify-content: center;

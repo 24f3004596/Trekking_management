@@ -19,7 +19,7 @@ def get_current_staff():
     return User.query.get(user_id)
 
 
-# ─── Dashboard ────────────────────────────────────────────────────────────────
+#Dashboard
 
 @staff_bp.route('/dashboard')
 def dashboard():
@@ -40,7 +40,7 @@ def dashboard():
     return render_template('staff/dashboard.html', staff_user=staff_user, trek_data=trek_data)
 
 
-# ─── Profile ─────────────────────────────────────────────────────────────────
+#Profile
 
 @staff_bp.route('/profile', methods=['GET', 'POST'])
 def profile():
@@ -78,7 +78,7 @@ def profile():
     return render_template('staff/profile.html', staff_user=staff_user, profile=profile)
 
 
-# ─── Trek Detail ─────────────────────────────────────────────────────────────
+#Trek Detail
 
 @staff_bp.route('/treks/<int:trek_id>')
 def trek_detail(trek_id):
@@ -91,7 +91,7 @@ def trek_detail(trek_id):
     return render_template('staff/trek_detail.html', trek=trek, bookings=bookings, staff_user=staff_user)
 
 
-# ─── Update Available Slots ──────────────────────────────────────────────────
+#Update Available Slots
 
 @staff_bp.route('/treks/<int:trek_id>/update-slots', methods=['POST'])
 def update_slots(trek_id):
@@ -115,7 +115,7 @@ def update_slots(trek_id):
     return redirect(url_for('staff.trek_detail', trek_id=trek_id))
 
 
-# ─── Update Trek Status (Open / Closed) ─────────────────────────────────────
+#Update Trek Status (Open / Closed)
 
 @staff_bp.route('/treks/<int:trek_id>/update-status', methods=['POST'])
 def update_status(trek_id):
@@ -137,7 +137,7 @@ def update_status(trek_id):
     return redirect(url_for('staff.trek_detail', trek_id=trek_id))
 
 
-# ─── Update Trek Phase (Started / Ongoing / Completed) ──────────────────────
+#Update Trek Phase (Started / Ongoing / Completed)
 
 @staff_bp.route('/treks/<int:trek_id>/update-phase', methods=['POST'])
 def update_phase(trek_id):
@@ -162,7 +162,7 @@ def update_phase(trek_id):
     return redirect(url_for('staff.trek_detail', trek_id=trek_id))
 
 
-# ─── Participants List ────────────────────────────────────────────────────────
+#Participants List
 
 @staff_bp.route('/treks/<int:trek_id>/participants')
 def participants(trek_id):

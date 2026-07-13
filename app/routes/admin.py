@@ -11,7 +11,7 @@ def admin_required():
     return session.get('role') == 'Admin'
 
 
-# ─── Dashboard ────────────────────────────────────────────────────────────────
+#Dashboard
 
 @admin_bp.route('/dashboard')
 def dashboard():
@@ -31,7 +31,7 @@ def dashboard():
                            total_bookings=total_bookings)
 
 
-# ─── Trek Management ──────────────────────────────────────────────────────────
+#Trek Management
 
 @admin_bp.route('/treks')
 def treks():
@@ -125,7 +125,7 @@ def delete_trek(trek_id):
     return redirect(url_for('admin.treks'))
 
 
-# ─── Assign Staff to Trek ────────────────────────────────────────────────────
+#Assign Staff to Trek
 
 @admin_bp.route('/treks/<int:trek_id>/assign-staff', methods=['GET', 'POST'])
 def assign_staff(trek_id):
@@ -150,8 +150,7 @@ def assign_staff(trek_id):
     return render_template('admin/assign_staff.html', trek=trek, staff_list=approved_staff)
 
 
-# ─── Staff Management ─────────────────────────────────────────────────────────
-
+#Staff Management
 @admin_bp.route('/staff')
 def staff():
     if not admin_required():
@@ -231,8 +230,7 @@ def delete_staff(user_id):
     flash(f'Staff {user.username} has been removed.', 'success')
     return redirect(url_for('admin.staff'))
 
-
-# ─── User Management ─────────────────────────────────────────────────────────
+#User Management
 
 @admin_bp.route('/users')
 def users():
@@ -281,7 +279,7 @@ def activate_user(user_id):
     return redirect(url_for('admin.users'))
 
 
-# ─── Bookings View ────────────────────────────────────────────────────────────
+#Bookings View 
 
 @admin_bp.route('/bookings')
 def bookings():
@@ -292,7 +290,7 @@ def bookings():
     return render_template('admin/bookings.html', bookings=all_bookings)
 
 
-# ─── Approve Trek (Pending → Approved) ────────────────────────────────────────
+#Approve Trek (Pending → Approved)
 
 @admin_bp.route('/treks/<int:trek_id>/approve', methods=['POST'])
 def approve_trek(trek_id):
@@ -309,7 +307,7 @@ def approve_trek(trek_id):
     return redirect(url_for('admin.treks'))
 
 
-# ─── Open Trek (Approved → Open) ──────────────────────────────────────────────
+#Open Trek (Approved → Open)
 
 @admin_bp.route('/treks/<int:trek_id>/open', methods=['POST'])
 def open_trek(trek_id):
@@ -326,7 +324,7 @@ def open_trek(trek_id):
     return redirect(url_for('admin.treks'))
 
 
-# ─── Trekking History ─────────────────────────────────────────────────────────
+#Trekking History
 
 @admin_bp.route('/history')
 def history():
@@ -347,7 +345,7 @@ def history():
     return render_template('admin/history.html', bookings=unique_bookings)
 
 
-# ─── Create Staff ─────────────────────────────────────────────────────────────
+#Create Staff
 
 @admin_bp.route('/staff/create', methods=['GET', 'POST'])
 def create_staff():

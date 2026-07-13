@@ -53,14 +53,14 @@
     </table>
 </div>
 
-<!-- ── Update Slots ─────────────────────────────────────── -->
+<!-- Update Slots -->
 <h2>Update Available Slots</h2>
 <form method="POST" action="{{ url_for('staff.update_slots', trek_id=trek.id) }}" style="display:flex; gap:8px; align-items:center; margin-bottom:20px;">
     <input type="number" name="available_slots" value="{{ trek.available_slots }}" min="0" style="width:100px; margin-bottom:0;">
     <button type="submit" class="btn btn-primary">Update Slots</button>
 </form>
 
-<!-- ── Update Status (Open / Closed) ──────────────────── -->
+<!--Update Status (Open / Closed)-->
 <h2>Update Booking Status</h2>
 <form method="POST" action="{{ url_for('staff.update_status', trek_id=trek.id) }}" style="display:flex; gap:8px; align-items:center; margin-bottom:20px;">
     <select name="status" style="width:160px; margin-bottom:0;">
@@ -70,7 +70,7 @@
     <button type="submit" class="btn btn-warning">Set Status</button>
 </form>
 
-<!-- ── Update Phase (Started / Ongoing / Completed) ───── -->
+<!--Update Phase (Started / Ongoing / Completed) -->
 <h2>Mark Trek Phase</h2>
 <form method="POST" action="{{ url_for('staff.update_phase', trek_id=trek.id) }}" style="display:flex; gap:8px; align-items:center; margin-bottom:20px;">
     <select name="phase" style="width:160px; margin-bottom:0;">
@@ -81,7 +81,7 @@
     <button type="submit" class="btn btn-success">Mark Phase</button>
 </form>
 
-<!-- ── Participants ────────────────────────────────────── -->
+<!--Participants-->
 <h2>Registered Participants</h2>
 <a href="{{ url_for('staff.participants', trek_id=trek.id) }}" class="btn btn-secondary" style="margin-bottom:12px; display:inline-block;">View Full Participant List</a>
 

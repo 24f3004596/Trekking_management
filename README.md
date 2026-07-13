@@ -38,12 +38,11 @@ trekking/
 │   ├── templates/           # Jinja2 HTML templates
 │   └── static/css/          # style.css (single global stylesheet)
 ├── config.py                # App configuration
-├── init_db.py               # Database seeding script
 ├── app.py                   # Entry point
 └── requirements.txt         # Python dependencies
 ```
 
-## API Specification
+## Application Endpoints (Routes)
 
 Since this is a full-stack Flask application rendering Jinja templates, the following web routes handle requests, serve pages, and process form submissions instead of returning pure JSON.
 
@@ -82,12 +81,7 @@ Since this is a full-stack Flask application rendering Jinja templates, the foll
    pip install -r requirements.txt
    ```
 
-3. Initialize the database:
-   ```
-   python init_db.py
-   ```
-
-4. Start the development server:
+3. Start the development server (auto-initializes database):
    ```
    python app.py
    ```
@@ -96,5 +90,5 @@ Since this is a full-stack Flask application rendering Jinja templates, the foll
 
 ## Default Admin Login
 
-After running `init_db.py`, an admin account is created automatically. Check `init_db.py` for the default credentials.
+When the application runs for the first time, an admin account is created automatically. Check `app.py` for the default credentials.
 
