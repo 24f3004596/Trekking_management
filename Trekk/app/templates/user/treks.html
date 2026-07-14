@@ -1,0 +1,41 @@
+{% extends "user/user_base.html" %}
+
+{% block content %}
+<h1>Browse Treks</h1>
+
+<form method="GET" action="{{ url_for('user.treks') }}" style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search by name or location" style="width:220px; padding:6px 8px; border:1px solid #ccc; border-radius:3px; font-size:13px;">
+    <select name="difficulty" style="padding:6px 8px; border:1px solid #ccc; border-radius:3px; font-size:13px;">
+        <option value="">All Difficulties</option>
+        <option value="Easy" {% if difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+        <option value="Moderate" {% if difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
+        <option value="Hard" {% if difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+    </select>
+    <select name="location" style="padding:6px 8px; border:1px solid #ccc; border-radius:3px; font-size:13px;">
+        <option value="">All Locations</option>
+        {% for loc in locations %}
+            <option value="{{ loc }}" {% if location == loc %}selected{% endif %}>{{ loc }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="{{ url_for('user.treks') }}" class="btn btn-secondary">Clear</a>
+</form>
+
+{% if treks %}
+    {% for t in treks %}
+    <div class="trek-row">
+        <h3>{{ t.name }}</h3>
+        <div class="meta">
+            {{ t.location }} | {{ t.difficulty }} | {{ t.duration_days }} day(s) |
+            {{ t.start_date.strftime('%d %b %Y') }} to {{ t.end_date.strftime('%d %b %Y') }} |
+            Slots: {{ t.available_slots }}
+        </div>
+        <form method="POST" action="{{ url_for('user.book_trek', trek_id=t.id) }}" class="inline-form">
+            <button type="submit" class="btn btn-success">Book</button>
+        </form>
+    </div>
+    {% endfor %}
+{% else %}
+    <p style="color:#666;">No open treks found.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<h1>Trek Staff</h1>
+
+<form class="search-form" method="GET" action="{{ url_for('admin.staff') }}">
+    <input type="text" name="search" placeholder="Search by name, email or ID..." value="{{ search }}">
+    <button class="btn btn-primary" type="submit">Search</button>
+    {% if search %}
+        <a class="btn btn-secondary" href="{{ url_for('admin.staff') }}">Clear</a>
+    {% endif %}
+</form>
+
+{% if staff_list %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th><th>Username</th><th>Email</th>
+            <th>Contact</th><th>Status</th><th>Active</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in staff_list %}
+        <tr>
+            <td>{{ member.id }}</td>
+            <td>{{ member.username }}</td>
+            <td>{{ member.email }}</td>
+            <td>
+                {% if member.staff_profile %}
+                    {{ member.staff_profile.contact_details or '—' }}
+                {% else %}—{% endif %}
+            </td>
+            <td>
+                {% if member.staff_profile %}
+                    {% if member.staff_profile.status == 'Approved' %}
+                        <span class="badge badge-green">Approved</span>
+                    {% else %}
+                        <span class="badge badge-yellow">Pending</span>
+                    {% endif %}
+                {% else %}—{% endif %}
+            </td>
+            <td>
+                {% if member.is_active_user %}
+                    <span class="badge badge-green">Active</span>
+                {% else %}
+                    <span class="badge badge-red">Blacklisted</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if member.staff_profile and member.staff_profile.status != 'Approved' %}
+                    <form class="inline-form" method="POST"
+                          action="{{ url_for('admin.approve_staff', user_id=member.id) }}">
+                        <button class="btn btn-success" type="submit">Approve</button>
+                    </form>
+                {% endif %}
+
+                {% if member.is_active_user %}
+                    <form class="inline-form" method="POST"
+                          action="{{ url_for('admin.blacklist_staff', user_id=member.id) }}">
+                        <button class="btn btn-danger" type="submit">Blacklist</button>
+                    </form>
+                {% else %}
+                    <form class="inline-form" method="POST"
+                          action="{{ url_for('admin.activate_staff', user_id=member.id) }}">
+                        <button class="btn btn-warning" type="submit">Activate</button>
+                    </form>
+                {% endif %}
+
+                <form class="inline-form" method="POST"
+                      action="{{ url_for('admin.delete_staff', user_id=member.id) }}">
+                    <button class="btn btn-secondary" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p style="color:#888">No staff found.</p>
+{% endif %}
+{% endblock %}

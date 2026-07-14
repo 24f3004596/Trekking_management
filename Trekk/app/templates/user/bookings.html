@@ -1,0 +1,64 @@
+{% extends "user/user_base.html" %}
+
+{% block content %}
+<h1>My Bookings</h1>
+
+{% if bookings %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Trek</th>
+            <th>Location</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Trek Status</th>
+            <th>Booking Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ b.trek.name }}</td>
+            <td>{{ b.trek.location }}</td>
+            <td>{{ b.trek.start_date.strftime('%d %b %Y') }}</td>
+            <td>{{ b.trek.end_date.strftime('%d %b %Y') }}</td>
+            <td>
+                {% if b.trek.status == 'Open' %}
+                    <span class="badge badge-green">Open</span>
+                {% elif b.trek.status == 'Closed' %}
+                    <span class="badge badge-red">Closed</span>
+                {% elif b.trek.status == 'Completed' %}
+                    <span class="badge badge-blue">Completed</span>
+                {% else %}
+                    <span class="badge badge-grey">{{ b.trek.status }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if b.status == 'Booked' %}
+                    <span class="badge badge-green">Booked</span>
+                {% elif b.status == 'Cancelled' %}
+                    <span class="badge badge-red">Cancelled</span>
+                {% else %}
+                    <span class="badge badge-blue">{{ b.status }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if b.status == 'Booked' %}
+                <form method="POST" action="{{ url_for('user.cancel_booking', booking_id=b.id) }}" class="inline-form">
+                    <button type="submit" class="btn btn-danger">Cancel Booking</button>
+                </form>
+                {% else %}
+                -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p style="color:#666;">You have no bookings yet. <a href="{{ url_for('user.treks') }}">Browse treks</a>.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "user/user_base.html" %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<p style="color:#555; margin-bottom:14px;">Welcome, {{ current_user.username }}.</p>
+
+<div class="card-row">
+    <div class="card">
+        <div class="number">{{ my_bookings|length }}</div>
+        <div class="label">Total Bookings</div>
+    </div>
+    <div class="card">
+        <div class="number">{{ active_count }}</div>
+        <div class="label">Active (Booked)</div>
+    </div>
+</div>
+
+<p><a href="{{ url_for('user.treks') }}" class="btn btn-primary">Browse Treks</a>
+   <a href="{{ url_for('user.my_bookings') }}" class="btn btn-secondary" style="margin-left:8px;">My Bookings</a></p>
+
+{% if my_bookings %}
+<h2 style="margin-top:20px;">Recent Bookings</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Trek</th>
+            <th>Location</th>
+            <th>Start Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in my_bookings[:5] %}
+        <tr>
+            <td>{{ b.trek.name }}</td>
+            <td>{{ b.trek.location }}</td>
+            <td>{{ b.trek.start_date.strftime('%d %b %Y') }}</td>
+            <td>
+                {% if b.status == 'Booked' %}
+                    <span class="badge badge-green">Booked</span>
+                {% elif b.status == 'Cancelled' %}
+                    <span class="badge badge-red">Cancelled</span>
+                {% else %}
+                    <span class="badge badge-blue">{{ b.status }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

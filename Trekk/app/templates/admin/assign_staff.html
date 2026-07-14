@@ -1,0 +1,27 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<h1>Assign Staff to Trek: {{ trek.name }}</h1>
+
+<div class="form-wrap">
+    <form method="POST">
+        <label>Select Staff Member</label>
+        <select name="staff_id">
+            <option value="">-- None (Unassign) --</option>
+            {% for member in staff_list %}
+                <option value="{{ member.id }}"
+                    {{ 'selected' if trek.assigned_staff_id == member.id else '' }}>
+                    {{ member.username }} ({{ member.email }})
+                </option>
+            {% endfor %}
+        </select>
+
+        {% if not staff_list %}
+            <p style="color:#888; font-size:12px;">No approved active staff available.</p>
+        {% endif %}
+
+        <button class="btn btn-success" type="submit">Save Assignment</button>
+        <a class="btn btn-secondary" href="{{ url_for('admin.treks') }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "user/user_base.html" %}
+
+{% block content %}
+<h1>Profile</h1>
+<div class="form-wrap">
+    <form method="POST" action="{{ url_for('user.profile') }}">
+        <label>Username</label>
+        <input type="text" name="username" value="{{ current_user.username }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ current_user.email }}" required>
+
+        <label>New Password <span style="color:#888; font-size:11px;">(leave blank to keep current)</span></label>
+        <input type="password" name="new_password" placeholder="New password">
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{{ url_for('user.dashboard') }}" class="btn btn-secondary" style="margin-left:8px;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

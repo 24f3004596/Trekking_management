@@ -1,0 +1,54 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<h1>Manage Users (Trekkers)</h1>
+
+<form class="search-form" method="GET" action="{{ url_for('admin.users') }}">
+    <input type="text" name="search" placeholder="Search by name, email or ID..." value="{{ search }}">
+    <button class="btn btn-primary" type="submit">Search</button>
+    {% if search %}
+        <a class="btn btn-secondary" href="{{ url_for('admin.users') }}">Clear</a>
+    {% endif %}
+</form>
+
+{% if users %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th><th>Username</th><th>Email</th><th>Status</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+            <td>{{ u.email }}</td>
+            <td>
+                {% if u.is_active_user %}
+                    <span class="badge badge-green">Active</span>
+                {% else %}
+                    <span class="badge badge-red">Blacklisted</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if u.is_active_user %}
+                    <form class="inline-form" method="POST"
+                          action="{{ url_for('admin.blacklist_user', user_id=u.id) }}">
+                        <button class="btn btn-danger" type="submit">Blacklist</button>
+                    </form>
+                {% else %}
+                    <form class="inline-form" method="POST"
+                          action="{{ url_for('admin.activate_user', user_id=u.id) }}">
+                        <button class="btn btn-warning" type="submit">Activate</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p style="color:#888">No users found.</p>
+{% endif %}
+{% endblock %}

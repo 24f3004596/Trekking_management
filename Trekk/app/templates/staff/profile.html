@@ -1,0 +1,32 @@
+{% extends "staff/staff_base.html" %}
+
+{% block content %}
+<h1>My Profile</h1>
+<div class="form-wrap">
+    <form method="POST" action="{{ url_for('staff.profile') }}">
+        <label>Username</label>
+        <input type="text" name="username" value="{{ staff_user.username }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ staff_user.email }}" required>
+
+        <label>Contact Details</label>
+        <input type="text" name="contact_details" value="{{ profile.contact_details if profile else '' }}">
+
+        <label>New Password <span style="color:#888; font-size:11px;">(leave blank to keep current)</span></label>
+        <input type="password" name="new_password" placeholder="Enter new password to change">
+
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+        <a href="{{ url_for('staff.dashboard') }}" class="btn btn-secondary" style="margin-left:8px;">Cancel</a>
+    </form>
+</div>
+
+<div style="margin-top:20px; background:#fff; border:1px solid #ddd; padding:14px 18px; max-width:500px; font-size:13px;">
+    <strong>Account Info</strong>
+    <table style="margin-top:8px; border:none;">
+        <tr><td style="border:none; color:#666; padding:4px 0;">Role</td><td style="border:none; padding:4px 10px;">{{ staff_user.role }}</td></tr>
+        <tr><td style="border:none; color:#666; padding:4px 0;">Status</td><td style="border:none; padding:4px 10px;">{{ profile.status if profile else 'N/A' }}</td></tr>
+        <tr><td style="border:none; color:#666; padding:4px 0;">Account Active</td><td style="border:none; padding:4px 10px;">{{ 'Yes' if staff_user.is_active_user else 'No' }}</td></tr>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "user/user_base.html" %}
+
+{% block content %}
+<h1>Trekking History</h1>
+<p style="color:#555; margin-bottom:14px;">Your past and cancelled treks.</p>
+
+{% if bookings %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Trek</th>
+            <th>Location</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Trek Status</th>
+            <th>Booking Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ b.trek.name }}</td>
+            <td>{{ b.trek.location }}</td>
+            <td>{{ b.trek.start_date.strftime('%d %b %Y') }}</td>
+            <td>{{ b.trek.end_date.strftime('%d %b %Y') }}</td>
+            <td>
+                {% if b.trek.status == 'Completed' %}
+                    <span class="badge badge-blue">Completed</span>
+                {% elif b.trek.status == 'Open' %}
+                    <span class="badge badge-green">Open</span>
+                {% elif b.trek.status == 'Closed' %}
+                    <span class="badge badge-red">Closed</span>
+                {% else %}
+                    <span class="badge badge-grey">{{ b.trek.status }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if b.status == 'Cancelled' %}
+                    <span class="badge badge-red">Cancelled</span>
+                {% elif b.status == 'Completed' %}
+                    <span class="badge badge-blue">Completed</span>
+                {% else %}
+                    <span class="badge badge-grey">{{ b.status }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p style="color:#666;">No history yet.</p>
+{% endif %}
+{% endblock %}
+

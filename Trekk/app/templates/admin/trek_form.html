@@ -1,0 +1,49 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block content %}
+<h1>{{ action }} Trek</h1>
+
+<div class="form-wrap">
+    <form method="POST">
+        <label>Trek Name</label>
+        <input type="text" name="name" required value="{{ trek.name if trek else '' }}">
+
+        <label>Location</label>
+        <input type="text" name="location" required value="{{ trek.location if trek else '' }}">
+
+        <label>Difficulty</label>
+        <select name="difficulty" required>
+            <option value="">-- Select --</option>
+            {% for d in ['Easy', 'Moderate', 'Hard'] %}
+                <option value="{{ d }}" {{ 'selected' if trek and trek.difficulty == d else '' }}>{{ d }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Duration (days)</label>
+        <input type="number" name="duration_days" min="1" required
+               value="{{ trek.duration_days if trek else '' }}">
+
+        <label>Available Slots</label>
+        <input type="number" name="available_slots" min="0" required
+               value="{{ trek.available_slots if trek else '' }}">
+
+        <label>Status</label>
+        <select name="status" required>
+            {% for s in ['Pending', 'Approved', 'Open', 'Closed', 'Completed'] %}
+                <option value="{{ s }}" {{ 'selected' if trek and trek.status == s else '' }}>{{ s }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Start Date</label>
+        <input type="date" name="start_date" required
+               value="{{ trek.start_date.strftime('%Y-%m-%d') if trek else '' }}">
+
+        <label>End Date</label>
+        <input type="date" name="end_date" required
+               value="{{ trek.end_date.strftime('%Y-%m-%d') if trek else '' }}">
+
+        <button class="btn btn-success" type="submit">{{ action }} Trek</button>
+        <a class="btn btn-secondary" href="{{ url_for('admin.treks') }}">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "staff/staff_base.html" %}
+
+{% block content %}
+<div style="margin-bottom:12px;">
+    <a href="{{ url_for('staff.dashboard') }}" class="btn btn-secondary">← Dashboard</a>
+</div>
+
+<h1>{{ trek.name }}</h1>
+
+<!-- Trek Summary -->
+<div style="background:#fff; border:1px solid #ddd; padding:14px 18px; margin-bottom:16px; font-size:13px;">
+    <table style="border:none; width:auto;">
+        <tr>
+            <td style="border:none; color:#666; padding:3px 0; width:160px;">Location</td>
+            <td style="border:none; padding:3px 10px;">{{ trek.location }}</td>
+        </tr>
+        <tr>
+            <td style="border:none; color:#666; padding:3px 0;">Difficulty</td>
+            <td style="border:none; padding:3px 10px;">{{ trek.difficulty }}</td>
+        </tr>
+        <tr>
+            <td style="border:none; color:#666; padding:3px 0;">Duration</td>
+            <td style="border:none; padding:3px 10px;">{{ trek.duration_days }} day(s)</td>
+        </tr>
+        <tr>
+            <td style="border:none; color:#666; padding:3px 0;">Dates</td>
+            <td style="border:none; padding:3px 10px;">{{ trek.start_date.strftime('%d %b %Y') }} → {{ trek.end_date.strftime('%d %b %Y') }}</td>
+        </tr>
+        <tr>
+            <td style="border:none; color:#666; padding:3px 0;">Current Status</td>
+            <td style="border:none; padding:3px 10px;">
+                {% if trek.status == 'Open' %}
+                    <span class="badge badge-green">Open</span>
+                {% elif trek.status == 'Closed' %}
+                    <span class="badge badge-red">Closed</span>
+                {% elif trek.status == 'Completed' %}
+                    <span class="badge badge-blue">Completed</span>
+                {% elif trek.status in ['Started', 'Ongoing'] %}
+                    <span class="badge badge-yellow">{{ trek.status }}</span>
+                {% else %}
+                    <span class="badge badge-grey">{{ trek.status }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td style="border:none; color:#666; padding:3px 0;">Available Slots</td>
+            <td style="border:none; padding:3px 10px;">{{ trek.available_slots }}</td>
+        </tr>
+        <tr>
+            <td style="border:none; color:#666; padding:3px 0;">Registered Trekkers</td>
+            <td style="border:none; padding:3px 10px;">{{ bookings|selectattr('status', 'ne', 'Cancelled')|list|length }}</td>
+        </tr>
+    </table>
+</div>
+
+<!-- Update Slots -->
+<h2>Update Available Slots</h2>
+<form method="POST" action="{{ url_for('staff.update_slots', trek_id=trek.id) }}" style="display:flex; gap:8px; align-items:center; margin-bottom:20px;">
+    <input type="number" name="available_slots" value="{{ trek.available_slots }}" min="0" style="width:100px; margin-bottom:0;">
+    <button type="submit" class="btn btn-primary">Update Slots</button>
+</form>
+
+<!--Update Status (Open / Closed)-->
+<h2>Update Booking Status</h2>
+<form method="POST" action="{{ url_for('staff.update_status', trek_id=trek.id) }}" style="display:flex; gap:8px; align-items:center; margin-bottom:20px;">
+    <select name="status" style="width:160px; margin-bottom:0;">
+        <option value="Open"   {% if trek.status == 'Open' %}selected{% endif %}>Open</option>
+        <option value="Closed" {% if trek.status == 'Closed' %}selected{% endif %}>Closed</option>
+    </select>
+    <button type="submit" class="btn btn-warning">Set Status</button>
+</form>
+
+<!--Update Phase (Started / Ongoing / Completed) -->
+<h2>Mark Trek Phase</h2>
+<form method="POST" action="{{ url_for('staff.update_phase', trek_id=trek.id) }}" style="display:flex; gap:8px; align-items:center; margin-bottom:20px;">
+    <select name="phase" style="width:160px; margin-bottom:0;">
+        <option value="Started"   {% if trek.status == 'Started' %}selected{% endif %}>Started</option>
+        <option value="Ongoing"   {% if trek.status == 'Ongoing' %}selected{% endif %}>Ongoing</option>
+        <option value="Completed" {% if trek.status == 'Completed' %}selected{% endif %}>Completed</option>
+    </select>
+    <button type="submit" class="btn btn-success">Mark Phase</button>
+</form>
+
+<!--Participants-->
+<h2>Registered Participants</h2>
+<a href="{{ url_for('staff.participants', trek_id=trek.id) }}" class="btn btn-secondary" style="margin-bottom:12px; display:inline-block;">View Full Participant List</a>
+
+{% if bookings %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Trekker</th>
+            <th>Email</th>
+            <th>Booking Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ b.user.username }}</td>
+            <td>{{ b.user.email }}</td>
+            <td>{{ b.booking_date.strftime('%d %b %Y') }}</td>
+            <td>
+                {% if b.status == 'Booked' %}
+                    <span class="badge badge-green">Booked</span>
+                {% elif b.status == 'Cancelled' %}
+                    <span class="badge badge-red">Cancelled</span>
+                {% else %}
+                    <span class="badge badge-blue">{{ b.status }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p style="color:#666; font-size:13px;">No participants registered for this trek yet.</p>
+{% endif %}
+{% endblock %}
